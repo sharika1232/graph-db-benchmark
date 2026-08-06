@@ -48,6 +48,21 @@ CognoDB Cloud (Free Tier)
 
 ---
 
+## Resource Configuration
+
+Neo4j Community Edition:
+- Local machine
+
+CognoDB Cloud:
+- Free Tier (c0)
+
+Python:
+- Python 3.x
+
+Operating System:
+- Windows 11
+
+
 # Benchmark Queries
 
 ### 1-Hop Traversal
@@ -200,6 +215,13 @@ python src/run_benchmark.py
 This project provides a reusable benchmarking framework for graph databases using identical datasets and query workloads. The current implementation benchmarks Neo4j and CognoDB Cloud and can be extended to additional graph database platforms.
 
 ---
+# Caveats
+
+- Benchmarks were executed on free-tier resources.
+- Network latency may affect cloud benchmark timings.
+- Warm-up iterations were executed before collecting benchmark metrics.
+- Results are specific to the tested environment and dataset.
+
 
 # Author
 
