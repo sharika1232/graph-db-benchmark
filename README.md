@@ -1,36 +1,54 @@
-# Graph Database Benchmark
+# Graph Database Cloud Benchmark
 
 ## Project Overview
 
-This project benchmarks the performance of graph databases using a real-world social network dataset. The benchmark measures common graph operations such as graph traversal, point lookup, and aggregation to compare database performance.
+This project benchmarks graph database performance using a common dataset and identical Cypher workloads. The goal is to compare query latency and benchmark reproducibility across graph database platforms.
 
-## Graph Databases
+## Databases Benchmarked
 
-- Neo4j
+- Neo4j Community Edition
 - CognoDB Cloud
 
-> Additional graph databases can be added using the same benchmark framework.
+> The benchmark framework is designed so additional graph databases can be added using the same workloads.
 
 ---
 
-## Dataset
+# Dataset
 
-Dataset: SNAP Social Network Dataset (Pokec)
+Dataset Name:
+SNAP Soc-Pokec Social Network
 
 Source:
 https://snap.stanford.edu/data/soc-pokec.html
 
-Dataset Used:
-- soc-pokec-relationships.txt
-
 Relationships Loaded:
-- 100,000
+100,000
+
+Load Method:
+Python Batch Loader using Neo4j Driver
 
 ---
 
-## Benchmark Queries
+# Environment
 
-The following workloads were executed:
+Operating System:
+Windows 11
+
+Language:
+Python 3
+
+Driver:
+Neo4j Python Driver
+
+Database:
+Neo4j Community Edition
+
+Cloud Database:
+CognoDB Cloud (Free Tier)
+
+---
+
+# Benchmark Queries
 
 ### 1-Hop Traversal
 
@@ -72,95 +90,117 @@ RETURN p
 
 ---
 
-## Benchmark Metrics
+# Benchmark Methodology
 
-The benchmark records:
-
-- Average Latency (ms)
-- P50 Latency
-- P95 Latency
-- Returned Records
+- Same dataset loaded into each database.
+- Same Cypher queries executed.
+- Warm-up runs before benchmarking.
+- 100 benchmark iterations per workload.
+- Measured:
+  - Average latency
+  - P50 latency
+  - P95 latency
 
 ---
 
-## Project Structure
+# Neo4j Results
+
+| Benchmark | Average (ms) | P50 (ms) | P95 (ms) |
+|-----------|-------------:|---------:|----------:|
+| 1-Hop Traversal | 351.160 | 307.362 | 336.374 |
+| 2-Hop Traversal | 520.278 | 402.397 | 708.081 |
+| 3-Hop Traversal | 440.266 | 433.784 | 581.876 |
+| Aggregation | 386.957 | 373.232 | 514.436 |
+| Point Lookup | 323.879 | 312.909 | 364.876 |
+
+---
+
+# CognoDB Results
+
+| Benchmark | Average (ms) | P50 (ms) | P95 (ms) |
+|-----------|-------------:|---------:|----------:|
+| 1-Hop Traversal | 394.034 | 315.257 | 700.424 |
+| 2-Hop Traversal | 399.513 | 311.197 | 613.892 |
+| 3-Hop Traversal | 442.185 | 368.418 | 613.359 |
+| Aggregation | 307.040 | 307.809 | 311.556 |
+| Point Lookup | 317.573 | 307.879 | 333.520 |
+
+---
+
+# Results
+
+The benchmark framework records:
+
+- Returned records
+- Average latency
+- P50 latency
+- P95 latency
+
+Results are stored as CSV files in the `results` directory.
+
+---
+
+# Project Structure
 
 ```
 graph-db-benchmark/
-│
 ├── data/
 ├── results/
 ├── src/
 ├── README.md
 ├── requirements.txt
-└── .env.example
+├── .env.example
+└── .gitignore
 ```
 
 ---
 
-## Installation
+# Installation
 
-Create a virtual environment.
+Create a virtual environment:
 
-```
+```bash
 python -m venv .venv
 ```
 
-Activate it.
+Activate it:
 
-Windows
+Windows:
 
-```
+```bash
 .venv\Scripts\activate
 ```
 
-Install dependencies.
+Install dependencies:
 
-```
+```bash
 pip install -r requirements.txt
 ```
 
 ---
 
-## Load Dataset
+# Load Dataset
 
-```
+```bash
 python src/load.py
 ```
 
 ---
 
-## Run Benchmark
+# Run Benchmark
 
-```
+```bash
 python src/run_benchmark.py
 ```
 
 ---
 
-## Output
+# Conclusion
 
-Benchmark results are stored in the `results` folder as CSV files.
-
-Example columns:
-
-- Benchmark
-- Records
-- Average(ms)
-- P50(ms)
-- P95(ms)
+This project provides a reusable benchmarking framework for graph databases using identical datasets and query workloads. The current implementation benchmarks Neo4j and CognoDB Cloud and can be extended to additional graph database platforms.
 
 ---
 
-## Technologies
-
-- Python
-- Neo4j
-- CognoDB Cloud
-- Cypher Query Language
-
----
-
-## Author
+# Author
 
 sharika Enagandula
