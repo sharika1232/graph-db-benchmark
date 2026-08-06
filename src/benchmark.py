@@ -16,14 +16,18 @@ class Neo4jBenchmark:
 
     def run_query(self, query, parameters=None):
 
+        parameters = parameters or {}
+
         with self.driver.session() as session:
 
             start = time.perf_counter()
 
-            result = session.run(query, parameters or {})
+            result = session.run(query, parameters)
 
             records = list(result)
 
             end = time.perf_counter()
 
-        return len(records), (end - start)
+        elapsed = end - start
+
+        return len(records), elapsed
