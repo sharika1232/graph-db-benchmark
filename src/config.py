@@ -27,3 +27,9 @@ ARANGO_HOST = "http://127.0.0.1:8529"
 ARANGO_USERNAME = "root"
 ARANGO_PASSWORD = "Graph@1234"
 ARANGO_DATABASE = "_system"
+
+# Memgraph
+
+MEMGRAPH_URI = os.getenv("MEMGRAPH_URI", "bolt://localhost:7688")
+MEMGRAPH_USER = os.getenv("MEMGRAPH_USER", "")
+MEMGRAPH_PASSWORD = os.getenv("MEMGRAPH_PASSWORD", "")
