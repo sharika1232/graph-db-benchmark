@@ -4,6 +4,8 @@
 
 This project benchmarks graph database performance using a common social network dataset and identical graph query workloads. The goal is to compare query latency, scalability, and benchmark reproducibility across multiple graph database platforms.
 
+The benchmark framework is reusable and allows new graph databases to be integrated using the same dataset, benchmark methodology, and query workloads.
+
 ---
 
 # Databases Benchmarked
@@ -12,8 +14,7 @@ This project benchmarks graph database performance using a common social network
 - CognoDB Cloud
 - ArangoDB Community Edition
 - Memgraph Community Edition
-
-The benchmark framework is designed so additional graph databases can be integrated using the same dataset, benchmark methodology, and workloads.
+- Kùzu Graph Database
 
 ---
 
@@ -48,13 +49,14 @@ Python Batch Loader
 # Environment
 
 | Component | Version |
-|-----------|---------|
+|------------|--------------------------|
 | Operating System | Windows 11 |
 | Language | Python 3.x |
 | Neo4j Driver | neo4j |
 | ArangoDB Driver | python-arango |
 | Memgraph Driver | neo4j (Bolt Protocol) |
-| Local Databases | Neo4j, ArangoDB, Memgraph |
+| Kùzu Driver | kuzu |
+| Local Databases | Neo4j, ArangoDB, Memgraph, Kùzu |
 | Cloud Database | CognoDB Cloud |
 
 ---
@@ -80,6 +82,12 @@ Python Batch Loader
 - Community Edition
 - Docker Container
 - Bolt Protocol (Port 7688)
+
+## Kùzu
+
+- Embedded Graph Database
+- Local Machine
+- Python API
 
 ---
 
@@ -168,7 +176,7 @@ The benchmark uses the same methodology across all graph databases.
 
 # ArangoDB Results
 
-Results are available in:
+Benchmark results are available in:
 
 ```text
 results/arangodb_results.csv
@@ -188,6 +196,16 @@ results/arangodb_results.csv
 
 ---
 
+# Kùzu Results
+
+Benchmark results are available in:
+
+```text
+results/kuzu_results.csv
+```
+
+---
+
 # Performance Comparison
 
 | Database | 1-Hop | 2-Hop | 3-Hop | Aggregation | Point Lookup |
@@ -196,6 +214,7 @@ results/arangodb_results.csv
 | CognoDB | 394.034 | 399.513 | 442.185 | 307.040 | 317.573 |
 | ArangoDB | See CSV | See CSV | See CSV | See CSV | See CSV |
 | Memgraph | 6.001 | 7.384 | 8.261 | 17.604 | 21.342 |
+| Kùzu | See CSV | See CSV | See CSV | See CSV | See CSV |
 
 ---
 
@@ -206,30 +225,43 @@ graph-db-benchmark/
 │
 ├── data/
 │   └── raw/
+│       ├── facebook_combined.txt
+│       └── soc-pokec-relationships.txt
 │
 ├── results/
 │   ├── neo4j_results.csv
 │   ├── cognodb_results.csv
 │   ├── arangodb_results.csv
-│   └── memgraph_results.csv
+│   ├── memgraph_results.csv
+│   └── kuzu_results.csv
 │
 ├── src/
 │   ├── benchmark.py
 │   ├── benchmark_runner.py
 │   ├── batch_loader.py
+│   ├── config.py
+│   ├── result_writer.py
+│   │
 │   ├── neo4j_loader.py
 │   ├── arangodb_loader.py
 │   ├── memgraph_loader.py
+│   ├── kuzu_loader.py
+│   │
 │   ├── arangodb_runner.py
 │   ├── memgraph_runner.py
+│   ├── kuzu_runner.py
+│   │
 │   ├── load.py
 │   ├── load_arango.py
 │   ├── load_memgraph.py
+│   ├── load_kuzu.py
+│   │
 │   ├── run_benchmark.py
 │   ├── run_arango_benchmark.py
 │   ├── run_memgraph_benchmark.py
-│   ├── result_writer.py
-│   └── config.py
+│   ├── run_kuzu_benchmark.py
+│   │
+│   └── ...
 │
 ├── README.md
 ├── requirements.txt
@@ -259,12 +291,18 @@ Create a virtual environment
 python -m venv .venv
 ```
 
-Activate the environment
+Activate the virtual environment
 
-Windows
+### Windows
 
 ```bash
 .venv\Scripts\activate
+```
+
+### Linux / macOS
+
+```bash
+source .venv/bin/activate
 ```
 
 Install dependencies
@@ -295,6 +333,12 @@ python src/load_arango.py
 python src/load_memgraph.py
 ```
 
+## Kùzu
+
+```bash
+python src/load_kuzu.py
+```
+
 ---
 
 # Run Benchmarks
@@ -317,11 +361,17 @@ python src/run_arango_benchmark.py
 python src/run_memgraph_benchmark.py
 ```
 
+## Kùzu
+
+```bash
+python src/run_kuzu_benchmark.py
+```
+
 ---
 
 # Results
 
-Benchmark results are automatically stored in the **results** directory.
+Benchmark results are automatically generated and stored in the **results** directory.
 
 Generated files:
 
@@ -329,6 +379,7 @@ Generated files:
 - cognodb_results.csv
 - arangodb_results.csv
 - memgraph_results.csv
+- kuzu_results.csv
 
 ---
 
@@ -336,23 +387,37 @@ Generated files:
 
 This project provides a reusable benchmarking framework for graph databases using identical datasets and benchmark workloads.
 
-The current implementation benchmarks:
+The current implementation benchmarks the following graph database platforms:
 
 - Neo4j Community Edition
 - CognoDB Cloud
 - ArangoDB Community Edition
 - Memgraph Community Edition
+- Kùzu Graph Database
 
-The framework is modular and can easily be extended to benchmark additional graph database platforms with minimal code changes.
+The benchmark framework follows a common methodology for all supported databases, enabling fair comparison of graph query performance across multiple platforms. The modular architecture also makes it straightforward to extend the framework with additional graph databases in the future.
 
 ---
 
 # Caveats
 
-- Benchmarks were executed on free-tier resources where applicable.
-- Network latency may affect cloud benchmark timings.
+- Benchmarks were executed on local hardware and free-tier cloud resources where applicable.
+- Network latency may affect cloud database benchmark timings.
 - Warm-up iterations were executed before collecting benchmark metrics.
-- Results are specific to the tested environment, hardware, and dataset.
+- Results are specific to the tested environment, dataset, and hardware configuration.
+- Different graph databases use different storage engines and query optimizers, so absolute performance values may vary depending on workload characteristics.
+
+---
+
+# Future Work
+
+Possible future improvements include:
+
+- Support for additional graph databases such as Apache AGE, JanusGraph, or TigerGraph.
+- Larger benchmark datasets.
+- Automated benchmark visualization.
+- Docker Compose setup for all supported databases.
+- CI/CD integration for automated benchmark execution.
 
 ---
 
