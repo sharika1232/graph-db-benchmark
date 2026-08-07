@@ -33,3 +33,7 @@ ARANGO_DATABASE = "_system"
 MEMGRAPH_URI = os.getenv("MEMGRAPH_URI", "bolt://localhost:7688")
 MEMGRAPH_USER = os.getenv("MEMGRAPH_USER", "")
 MEMGRAPH_PASSWORD = os.getenv("MEMGRAPH_PASSWORD", "")
+
+# Kuzu
+
+KUZU_DATABASE = "kuzu_benchmark"

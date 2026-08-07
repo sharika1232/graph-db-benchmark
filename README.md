@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This project benchmarks graph database performance using a common social network dataset and identical graph query workloads. The goal is to compare query latency, scalability, and benchmark reproducibility across different graph database platforms.
+This project benchmarks graph database performance using a common social network dataset and identical graph query workloads. The goal is to compare query latency, scalability, and benchmark reproducibility across multiple graph database platforms.
 
 ---
 
@@ -11,8 +11,9 @@ This project benchmarks graph database performance using a common social network
 - Neo4j Community Edition
 - CognoDB Cloud
 - ArangoDB Community Edition
+- Memgraph Community Edition
 
-The benchmark framework is designed so additional graph databases can be added using the same workloads.
+The benchmark framework is designed so additional graph databases can be integrated using the same dataset, benchmark methodology, and workloads.
 
 ---
 
@@ -30,7 +31,7 @@ https://snap.stanford.edu/data/soc-pokec.html
 
 100,000
 
-**Node Collection**
+**Node Label**
 
 Person
 
@@ -47,14 +48,14 @@ Python Batch Loader
 # Environment
 
 | Component | Version |
-|-----------|----------|
+|-----------|---------|
 | Operating System | Windows 11 |
 | Language | Python 3.x |
 | Neo4j Driver | neo4j |
 | ArangoDB Driver | python-arango |
-| Database | Neo4j Community Edition |
+| Memgraph Driver | neo4j (Bolt Protocol) |
+| Local Databases | Neo4j, ArangoDB, Memgraph |
 | Cloud Database | CognoDB Cloud |
-| Graph Database | ArangoDB Community Edition |
 
 ---
 
@@ -73,6 +74,12 @@ Python Batch Loader
 
 - Community Edition
 - Local Machine
+
+## Memgraph
+
+- Community Edition
+- Docker Container
+- Bolt Protocol (Port 7688)
 
 ---
 
@@ -120,18 +127,18 @@ RETURN p
 
 # Benchmark Methodology
 
-The benchmark uses the same methodology across all databases.
+The benchmark uses the same methodology across all graph databases.
 
 - Same dataset
 - Same graph structure
 - Same benchmark queries
-- Warm-up runs before execution
+- Warm-up runs before benchmarking
 - Multiple benchmark iterations
 - Metrics collected:
+  - Records Returned
   - Average Latency
   - P50 Latency
   - P95 Latency
-  - Records Returned
 
 ---
 
@@ -161,17 +168,40 @@ The benchmark uses the same methodology across all databases.
 
 # ArangoDB Results
 
-> Results are available in:
+Results are available in:
 
-```
+```text
 results/arangodb_results.csv
 ```
 
 ---
 
+# Memgraph Results
+
+| Benchmark | Average (ms) | P50 (ms) | P95 (ms) |
+|-----------|-------------:|---------:|---------:|
+| 1-Hop Traversal | 6.001 | 5.702 | 7.231 |
+| 2-Hop Traversal | 7.384 | 7.622 | 8.711 |
+| 3-Hop Traversal | 8.261 | 7.991 | 9.435 |
+| Aggregation | 17.604 | 16.992 | 20.560 |
+| Point Lookup | 21.342 | 20.004 | 25.164 |
+
+---
+
+# Performance Comparison
+
+| Database | 1-Hop | 2-Hop | 3-Hop | Aggregation | Point Lookup |
+|----------|-------:|-------:|-------:|------------:|-------------:|
+| Neo4j | 351.160 | 520.278 | 440.266 | 386.957 | 323.879 |
+| CognoDB | 394.034 | 399.513 | 442.185 | 307.040 | 317.573 |
+| ArangoDB | See CSV | See CSV | See CSV | See CSV | See CSV |
+| Memgraph | 6.001 | 7.384 | 8.261 | 17.604 | 21.342 |
+
+---
+
 # Project Structure
 
-```
+```text
 graph-db-benchmark/
 │
 ├── data/
@@ -180,18 +210,24 @@ graph-db-benchmark/
 ├── results/
 │   ├── neo4j_results.csv
 │   ├── cognodb_results.csv
-│   └── arangodb_results.csv
+│   ├── arangodb_results.csv
+│   └── memgraph_results.csv
 │
 ├── src/
 │   ├── benchmark.py
 │   ├── benchmark_runner.py
 │   ├── batch_loader.py
+│   ├── neo4j_loader.py
 │   ├── arangodb_loader.py
+│   ├── memgraph_loader.py
 │   ├── arangodb_runner.py
+│   ├── memgraph_runner.py
 │   ├── load.py
 │   ├── load_arango.py
+│   ├── load_memgraph.py
 │   ├── run_benchmark.py
 │   ├── run_arango_benchmark.py
+│   ├── run_memgraph_benchmark.py
 │   ├── result_writer.py
 │   └── config.py
 │
@@ -217,13 +253,13 @@ Move into the project
 cd graph-db-benchmark
 ```
 
-Create virtual environment
+Create a virtual environment
 
 ```bash
 python -m venv .venv
 ```
 
-Activate environment
+Activate the environment
 
 Windows
 
@@ -241,49 +277,58 @@ pip install -r requirements.txt
 
 # Load Dataset
 
-Neo4j
+## Neo4j
 
 ```bash
 python src/load.py
 ```
 
-ArangoDB
+## ArangoDB
 
 ```bash
 python src/load_arango.py
+```
+
+## Memgraph
+
+```bash
+python src/load_memgraph.py
 ```
 
 ---
 
 # Run Benchmarks
 
-Neo4j
+## Neo4j
 
 ```bash
 python src/run_benchmark.py
 ```
 
-ArangoDB
+## ArangoDB
 
 ```bash
 python src/run_arango_benchmark.py
+```
+
+## Memgraph
+
+```bash
+python src/run_memgraph_benchmark.py
 ```
 
 ---
 
 # Results
 
-Benchmark results are automatically stored inside:
+Benchmark results are automatically stored in the **results** directory.
 
-```
-results/
-```
-
-Generated files
+Generated files:
 
 - neo4j_results.csv
 - cognodb_results.csv
 - arangodb_results.csv
+- memgraph_results.csv
 
 ---
 
@@ -296,8 +341,9 @@ The current implementation benchmarks:
 - Neo4j Community Edition
 - CognoDB Cloud
 - ArangoDB Community Edition
+- Memgraph Community Edition
 
-The framework can be extended to benchmark additional graph databases using the same methodology.
+The framework is modular and can easily be extended to benchmark additional graph database platforms with minimal code changes.
 
 ---
 
@@ -306,7 +352,7 @@ The framework can be extended to benchmark additional graph databases using the 
 - Benchmarks were executed on free-tier resources where applicable.
 - Network latency may affect cloud benchmark timings.
 - Warm-up iterations were executed before collecting benchmark metrics.
-- Results are specific to the tested environment and dataset.
+- Results are specific to the tested environment, hardware, and dataset.
 
 ---
 
