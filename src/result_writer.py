@@ -4,19 +4,14 @@ import os
 
 class ResultWriter:
 
-    def __init__(self, filename="results/neo4j_results.csv"):
-        os.makedirs("results", exist_ok=True)
-        self.file = filename
+    def __init__(self, filename):
+        self.filename = filename
 
-    def write(self, benchmark_name, records, average, p50, p95):
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
 
-        file_exists = os.path.exists(self.file)
-
-        with open(self.file, "a", newline="") as csvfile:
-
-            writer = csv.writer(csvfile)
-
-            if not file_exists:
+        if not os.path.exists(filename):
+            with open(filename, "w", newline="") as f:
+                writer = csv.writer(f)
                 writer.writerow([
                     "Benchmark",
                     "Records",
@@ -25,8 +20,11 @@ class ResultWriter:
                     "P95(ms)"
                 ])
 
+    def write(self, benchmark, records, average, p50, p95):
+        with open(self.filename, "a", newline="") as f:
+            writer = csv.writer(f)
             writer.writerow([
-                benchmark_name,
+                benchmark,
                 records,
                 average,
                 p50,

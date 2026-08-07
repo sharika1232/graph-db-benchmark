@@ -1,16 +1,18 @@
 from benchmark import Neo4jBenchmark
-from runner import BenchmarkRunner
+from benchmark_runner import BenchmarkRunner
 from result_writer import ResultWriter
 
 # ---------------------------------
 # Initialize Benchmark
 # ---------------------------------
+
 benchmark = Neo4jBenchmark()
 runner = BenchmarkRunner(benchmark)
 
 # ---------------------------------
 # 1-Hop Traversal
 # ---------------------------------
+
 runner.execute(
     "1-Hop Traversal",
     """
@@ -23,6 +25,7 @@ runner.execute(
 # ---------------------------------
 # 2-Hop Traversal
 # ---------------------------------
+
 runner.execute(
     "2-Hop Traversal",
     """
@@ -35,6 +38,7 @@ runner.execute(
 # ---------------------------------
 # 3-Hop Traversal
 # ---------------------------------
+
 runner.execute(
     "3-Hop Traversal",
     """
@@ -47,6 +51,7 @@ runner.execute(
 # ---------------------------------
 # Aggregation
 # ---------------------------------
+
 runner.execute(
     "Aggregation",
     """
@@ -58,6 +63,7 @@ runner.execute(
 # ---------------------------------
 # Point Lookup
 # ---------------------------------
+
 with benchmark.driver.session() as session:
     record = session.run("""
         MATCH (p:Person)
@@ -77,11 +83,13 @@ runner.execute(
 # ---------------------------------
 # Close Benchmark
 # ---------------------------------
+
 benchmark.close()
 
 # ---------------------------------
 # Save Results
 # ---------------------------------
+
 writer = ResultWriter("results/neo4j_results.csv")
 
 for row in runner.get_results():

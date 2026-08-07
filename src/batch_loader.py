@@ -76,8 +76,12 @@ class BatchLoader:
 
         end = time.perf_counter()
 
+        elapsed = end - start
+        relationships_per_second = total / elapsed
+
         print("\n===================================")
         print("Dataset Loading Completed")
         print(f"Relationships Loaded : {total}")
-        print(f"Time Taken : {end-start:.2f} seconds")
+        print(f"Time Taken : {elapsed:.2f} seconds")
+        print(f"Relationships/sec : {relationships_per_second:.2f}")
         print("===================================")

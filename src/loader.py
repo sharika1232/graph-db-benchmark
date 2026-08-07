@@ -2,6 +2,7 @@ import time
 from neo4j import GraphDatabase
 from faker import Faker
 import uuid
+from batch_loader import BatchLoader
 
 from config import (
     NEO4J_URI,
@@ -73,3 +74,20 @@ class Neo4jLoader:
           """)
 
       print("Relationships Created")
+
+
+from arangodb_loader import ArangoLoader
+
+loader = ArangoLoader()
+
+print("Clearing database...")
+loader.clear_database()
+
+print("Loading dataset...")
+
+loader.load_dataset(
+    "data/raw/soc-pokec-relationships.txt",
+    max_relationships=100000
+)
+
+print("Done.")

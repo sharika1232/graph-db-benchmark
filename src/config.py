@@ -21,3 +21,9 @@ POSTGRES_PORT = int(os.getenv("POSTGRES_PORT", 5432))
 POSTGRES_DB = os.getenv("POSTGRES_DB", "benchmark")
 POSTGRES_USER = os.getenv("POSTGRES_USER", "postgres")
 POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "password")
+
+# ArangoDB
+ARANGO_HOST = "http://127.0.0.1:8529"
+ARANGO_USERNAME = "root"
+ARANGO_PASSWORD = "Graph@1234"
+ARANGO_DATABASE = "_system"
